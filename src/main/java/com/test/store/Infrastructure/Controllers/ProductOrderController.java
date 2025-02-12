@@ -1,6 +1,7 @@
 package com.test.store.Infrastructure.Controllers;
 
 import com.test.store.Application.UseCases.CreateOrderUseCase;
+import com.test.store.Application.UseCases.UpdateOrderUseCase;
 import com.test.store.Domain.Model.ProductOrderRepository;
 import com.test.store.Infrastructure.DTO.ProductOrderDTO;
 import com.test.store.Infrastructure.Mapper.ProductOrderMapper;
@@ -20,39 +21,58 @@ public class ProductOrderController {
     private final ProductOrderRepository productOrderRepository;
 
     private final CreateOrderUseCase createOrderUseCase;
+    private final UpdateOrderUseCase updateOrderUseCase;
+
+    @GetMapping("/{productOrderId}")
+    public ResponseEntity<ProductOrderDTO> getProductOrder(@PathVariable Long productOrderId){
+        if (productOrderId == null || productOrderId == 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(ProductOrderMapper.toDTO(productOrderRepository.getProductOrderById(productOrderId)));
+    }
+
 
     @GetMapping
     public ResponseEntity<List<ProductOrderDTO>> getProductOrders() {
         return ResponseEntity.ok(ProductOrderMapper.toDTOList(productOrderRepository.listProductOrders()));
     }
 
-    // ¿Hace falta hilar tan fino en la práctica?
-    // He probado a generar todos los casos posibles de respuesta, como referencia
+    @PutMapping
+    public ResponseEntity<ProductOrderDTO> updateProductOrder(@RequestBody ProductOrderDTO productOrder){
+        if (productOrder == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return ResponseEntity.ok(ProductOrderMapper.toDTO(
+                updateOrderUseCase.execute(ProductOrderMapper.toEntity(productOrder))));
+    }
+
+
     @PostMapping
-    public ResponseEntity<?> createProductOrder(@RequestBody ProductOrderDTO productOrder) {
-        try {
+    public ResponseEntity<ProductOrderDTO> createProductOrder(@RequestBody ProductOrderDTO productOrder) {
+
             if (productOrder.getProductId() == null || productOrder.getQuantity() == null) {
-                return ResponseEntity.badRequest().body("El ID del producto y la cantidad son obligatorios");
+                return ResponseEntity.badRequest().body(null);
             }
             if (productOrder.getQuantity() <= 0) {
-                return ResponseEntity.badRequest().body("La cantidad debe ser mayor que 0");
+                return ResponseEntity.badRequest().body(null);
             }
 
             ProductOrderDTO orderDTO = ProductOrderMapper.toDTO(
                     createOrderUseCase.execute(productOrder.getProductId(), productOrder.getQuantity()));
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(orderDTO);
+            return ResponseEntity.ok(orderDTO);
+    }
 
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error interno al crear la orden: " + e.getMessage());
+    @DeleteMapping("/{productOrderId}")
+    public ResponseEntity<Void> deleteProductOrder(@PathVariable Long productOrderId){
+        if (productOrderId == null || productOrderId == 0) {
+            return ResponseEntity.badRequest().body(null);
         }
+
+        productOrderRepository.deleteProductOrder(productOrderId);
+
+        return ResponseEntity.ok(null);
     }
 
 }

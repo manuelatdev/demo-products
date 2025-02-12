@@ -3,9 +3,14 @@ package com.test.store.Domain.Model;
 import java.util.List;
 
 public interface ProductOrderRepository {
-    ProductOrder create(ProductOrder productOrder);
+
+    ProductOrder getProductOrderById(Long productOrderId);
 
     List<ProductOrder> listProductOrders();
 
-    ProductOrder getProductOrderById(Long productOrderId);
+    ProductOrder create(ProductOrder productOrder);
+
+    ProductOrder updateProductOrder(ProductOrder productOrder);
+
+    Void deleteProductOrder(Long productOrderId);
 }
