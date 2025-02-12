@@ -1,4 +1,4 @@
-package com.test.demo.Infrastructure.Entities;
+package com.test.store.Infrastructure.Entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.test.demo.Domain.Model;
+package com.test.store.Domain.Model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

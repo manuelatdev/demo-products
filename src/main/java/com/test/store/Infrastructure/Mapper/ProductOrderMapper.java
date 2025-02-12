@@ -1,8 +1,8 @@
-package com.test.demo.Infrastructure.Mapper;
+package com.test.store.Infrastructure.Mapper;
 
 
-import com.test.demo.Domain.Model.ProductOrder;
-import com.test.demo.Infrastructure.DTO.ProductOrderDTO;
+import com.test.store.Domain.Model.ProductOrder;
+import com.test.store.Infrastructure.DTO.ProductOrderDTO;
 
 import java.util.Collections;
 import java.util.List;

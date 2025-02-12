@@ -1,9 +1,9 @@
-package com.test.demo.Application.UseCases;
+package com.test.store.Application.UseCases;
 
-import com.test.demo.Domain.Model.Product;
-import com.test.demo.Domain.Model.ProductOrder;
-import com.test.demo.Domain.Model.ProductOrderRepository;
-import com.test.demo.Domain.Model.ProductRepository;
+import com.test.store.Domain.Model.Product;
+import com.test.store.Domain.Model.ProductOrder;
+import com.test.store.Domain.Model.ProductOrderRepository;
+import com.test.store.Domain.Model.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

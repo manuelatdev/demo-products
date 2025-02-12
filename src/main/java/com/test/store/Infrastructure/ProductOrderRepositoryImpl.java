@@ -1,9 +1,9 @@
-package com.test.demo.Infrastructure;
+package com.test.store.Infrastructure;
 
-import com.test.demo.Domain.Model.ProductOrder;
-import com.test.demo.Domain.Model.ProductOrderRepository;
-import com.test.demo.Infrastructure.Entities.ProductOrderEntity;
-import com.test.demo.Infrastructure.Repositories.ProductOrderJPARepository;
+import com.test.store.Domain.Model.ProductOrder;
+import com.test.store.Domain.Model.ProductOrderRepository;
+import com.test.store.Infrastructure.Entities.ProductOrderEntity;
+import com.test.store.Infrastructure.Repositories.ProductOrderJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

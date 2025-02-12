@@ -1,9 +1,9 @@
-package com.test.demo.Infrastructure.Controllers;
+package com.test.store.Infrastructure.Controllers;
 
-import com.test.demo.Application.UseCases.CreateOrderUseCase;
-import com.test.demo.Domain.Model.ProductOrderRepository;
-import com.test.demo.Infrastructure.DTO.ProductOrderDTO;
-import com.test.demo.Infrastructure.Mapper.ProductOrderMapper;
+import com.test.store.Application.UseCases.CreateOrderUseCase;
+import com.test.store.Domain.Model.ProductOrderRepository;
+import com.test.store.Infrastructure.DTO.ProductOrderDTO;
+import com.test.store.Infrastructure.Mapper.ProductOrderMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,9 @@ public class ProductOrderController {
         return ResponseEntity.ok(ProductOrderMapper.toDTOList(productOrderRepository.listProductOrders()));
     }
 
-    @PostMapping // He probado a generar todos los casos posibles de respuesta, como referencia
+    // ¿Hace falta hilar tan fino en la práctica?
+    // He probado a generar todos los casos posibles de respuesta, como referencia
+    @PostMapping
     public ResponseEntity<?> createProductOrder(@RequestBody ProductOrderDTO productOrder) {
         try {
             if (productOrder.getProductId() == null || productOrder.getQuantity() == null) {

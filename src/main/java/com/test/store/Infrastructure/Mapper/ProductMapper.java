@@ -1,7 +1,7 @@
-package com.test.demo.Infrastructure.Mapper;
+package com.test.store.Infrastructure.Mapper;
 
-import com.test.demo.Domain.Model.Product;
-import com.test.demo.Infrastructure.DTO.ProductDTO;
+import com.test.store.Domain.Model.Product;
+import com.test.store.Infrastructure.DTO.ProductDTO;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +40,7 @@ public class ProductMapper {
             return Collections.emptyList();
         }
         return products.stream()
-                .map(ProductMapper::toDTO)
+                .map(dto -> ProductMapper.toDTO(dto))// lambda explícito
                 .collect(Collectors.toList());
     }
 
@@ -49,7 +49,7 @@ public class ProductMapper {
             return Collections.emptyList();
         }
         return productDTOs.stream()
-                .map(ProductMapper::toEntity)
+                .map(ProductMapper::toEntity)// lambda implícito con referencia a method
                 .collect(Collectors.toList());
     }
 }
