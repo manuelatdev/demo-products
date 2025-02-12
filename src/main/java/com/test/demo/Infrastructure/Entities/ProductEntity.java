@@ -1,13 +1,19 @@
-package com.test.demo.Domain.Model;
+package com.test.demo.Infrastructure.Entities;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "product")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class ProductEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
     private Long productId;
 
     private String name;

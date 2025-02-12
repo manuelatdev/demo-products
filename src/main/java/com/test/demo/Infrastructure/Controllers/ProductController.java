@@ -1,33 +1,33 @@
 package com.test.demo.Infrastructure.Controllers;
 
-import com.test.demo.Domain.Model.Product;
-import com.test.demo.Domain.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.test.demo.Domain.Model.ProductRepository;
+import com.test.demo.Infrastructure.DTO.ProductDTO;
+import com.test.demo.Infrastructure.Mapper.ProductMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/product")
 public class ProductController {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @GetMapping
-    public List<Product> getAllProducts(){
-        return productRepository.findAll();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        return ResponseEntity.ok(ProductMapper.toDTOList(productRepository.listProducts()));
     }
 
-    @GetMapping("/{id}")
-    public Product getProduct(@PathVariable Long id){
-        return productRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Producto no encontrado con ID: " + id)
-        );
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long productId) {
+        return ResponseEntity.ok(ProductMapper.toDTO(productRepository.getProductById(productId)));
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody Product product){
-        return productRepository.save(product);
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO product) {
+        return ResponseEntity.ok(ProductMapper.toDTO(productRepository.create(ProductMapper.toEntity(product))));
     }
 }

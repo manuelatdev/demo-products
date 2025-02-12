@@ -2,36 +2,36 @@ package com.test.demo.Application.UseCases;
 
 import com.test.demo.Domain.Model.Product;
 import com.test.demo.Domain.Model.ProductOrder;
-import com.test.demo.Domain.ProductOrderRepository;
-import com.test.demo.Domain.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.test.demo.Domain.Model.ProductOrderRepository;
+import com.test.demo.Domain.Model.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
+@RequiredArgsConstructor
 @Component
 public class CreateOrderUseCase {
 
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
     private final ProductOrderRepository productOrderRepository;
 
-    public CreateOrderUseCase(ProductOrderRepository productOrderRepository) {
-        this.productOrderRepository = productOrderRepository;
-    }
+    private final ProductRepository productRepository;
 
+    public ProductOrder execute(Long productId, Integer quantity) {
+        Product product = productRepository.getProductById(productId);
 
-    public ProductOrder execute(ProductOrder productOrder){
-        if(productOrder.getQuantity() > 0)
-        {
-            Product product = productRepository.findById(productOrder.getProductId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + productOrder.getProductId()));
-
-            productOrder.setTotalPrice(product.getPrice() * productOrder.getQuantity());
-
-            return productOrderRepository.save(productOrder);
-        } else {
-            throw new RuntimeException("La cantidad debe ser mayor que 0");
+        Objects.requireNonNull(product, "El producto con ID " + productId + " no fue encontrado");
+        if (quantity <= 0) {
+            throw new IllegalArgumentException("La cantidad debe ser mayor que 0");
         }
+
+        ProductOrder productOrder = new ProductOrder(
+                null,
+                productId,
+                quantity,
+                product.getPrice() * quantity);
+
+        return productOrderRepository.create(productOrder);
+
     }
 }

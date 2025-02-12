@@ -1,18 +1,13 @@
-package com.test.demo.Domain.Model;
+package com.test.demo.Infrastructure.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ProductOrder {
-    private Long productOrderId;
-
+@Data
+public class ProductOrderDTO {
+    private Long orderId;
     private Long productId;
-
     private Integer quantity;
-
     private Double totalPrice;
 }
