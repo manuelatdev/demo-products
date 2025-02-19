@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Repository // ??
+@Repository //
 public class ProductRepositoryImpl implements ProductRepository {
 
     private final ProductJPARepository productJPARepository;
@@ -46,10 +46,10 @@ public class ProductRepositoryImpl implements ProductRepository {
                 )).toList();
     }
 
-    @Transactional
+    @Transactional // No hace falta hacer el save() explicito
     @Override
-    public Product update(Product product){
-        ProductEntity oldProduct = productJPARepository.findById(product.getProductId()).orElseThrow(() -> new RuntimeException("Not found product with id: " + product.getProductId()));
+    public Product update(Long productId, Product product){
+        ProductEntity oldProduct = productJPARepository.findById(productId).orElseThrow(() -> new RuntimeException("Not found product with id: " + productId));
 
         oldProduct.setName(product.getName());
         oldProduct.setPrice(product.getPrice());
@@ -72,7 +72,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                         product.getDescription(),
                         product.getPrice()));
 
-        return new Product(  // revisar
+        return new Product(
                 productEntityDb.getProductId(),
                 productEntityDb.getName(),
                 productEntityDb.getDescription(),

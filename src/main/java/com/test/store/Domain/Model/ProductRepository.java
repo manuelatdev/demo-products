@@ -8,7 +8,7 @@ public interface ProductRepository {
 
     List<Product> listProducts();
 
-    Product update(Product product);
+    Product update(Long productId, Product product);
 
     Product create(Product product);
 

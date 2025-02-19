@@ -6,6 +6,7 @@ import com.test.store.Infrastructure.Entities.ProductOrderEntity;
 import com.test.store.Infrastructure.Repositories.ProductOrderJPARepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,6 +40,7 @@ public class ProductOrderRepositoryImpl implements ProductOrderRepository {
                 )).toList();
     }
 
+    @Transactional
     @Override
     public ProductOrder updateProductOrder(ProductOrder productOrder) {
         ProductOrderEntity productOrderEntity = new ProductOrderEntity(

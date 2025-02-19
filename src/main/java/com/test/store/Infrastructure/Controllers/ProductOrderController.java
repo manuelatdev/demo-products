@@ -2,15 +2,15 @@ package com.test.store.Infrastructure.Controllers;
 
 import com.test.store.Application.UseCases.CreateOrderUseCase;
 import com.test.store.Application.UseCases.UpdateOrderUseCase;
+import com.test.store.Domain.Model.ProductOrder;
 import com.test.store.Domain.Model.ProductOrderRepository;
 import com.test.store.Infrastructure.DTO.ProductOrderDTO;
 import com.test.store.Infrastructure.Mapper.ProductOrderMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.util.List;
 
 @RestController
@@ -24,7 +24,7 @@ public class ProductOrderController {
     private final UpdateOrderUseCase updateOrderUseCase;
 
     @GetMapping("/{productOrderId}")
-    public ResponseEntity<ProductOrderDTO> getProductOrder(@PathVariable Long productOrderId){
+    public ResponseEntity<ProductOrderDTO> getProductOrder(@PathVariable Long productOrderId) {
         if (productOrderId == null || productOrderId == 0) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -37,42 +37,52 @@ public class ProductOrderController {
         return ResponseEntity.ok(ProductOrderMapper.toDTOList(productOrderRepository.listProductOrders()));
     }
 
-    @PutMapping
-    public ResponseEntity<ProductOrderDTO> updateProductOrder(@RequestBody ProductOrderDTO productOrder){
+    @PutMapping("/{productOrderId}")
+    public ResponseEntity<ProductOrderDTO> updateProductOrder(@PathVariable(name = "productOrderId") Long productOrderId,
+                                                              @RequestBody ProductOrderDTO productOrder) {
+        if (productOrderId == null || productOrderId == 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         if (productOrder == null) {
             return ResponseEntity.badRequest().body(null);
         }
 
+
         return ResponseEntity.ok(ProductOrderMapper.toDTO(
-                updateOrderUseCase.execute(ProductOrderMapper.toEntity(productOrder))));
+                updateOrderUseCase.execute(productOrderId, ProductOrderMapper.toEntity(productOrder))));
     }
 
 
     @PostMapping
     public ResponseEntity<ProductOrderDTO> createProductOrder(@RequestBody ProductOrderDTO productOrder) {
 
-            if (productOrder.getProductId() == null || productOrder.getQuantity() == null) {
-                return ResponseEntity.badRequest().body(null);
-            }
-            if (productOrder.getQuantity() <= 0) {
-                return ResponseEntity.badRequest().body(null);
-            }
+        if (productOrder.getProductId() == null || productOrder.getQuantity() == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+        if (productOrder.getQuantity() <= 0) {
+            return ResponseEntity.badRequest().body(null);
+        }
 
-            ProductOrderDTO orderDTO = ProductOrderMapper.toDTO(
-                    createOrderUseCase.execute(productOrder.getProductId(), productOrder.getQuantity()));
+        ProductOrderDTO orderDTO = ProductOrderMapper.toDTO(
+                createOrderUseCase.execute(productOrder.getProductId(), productOrder.getQuantity()));
 
-            return ResponseEntity.ok(orderDTO);
+        return ResponseEntity.ok(orderDTO);
     }
 
-    @DeleteMapping("/{productOrderId}")
-    public ResponseEntity<Void> deleteProductOrder(@PathVariable Long productOrderId){
+    @DeleteMapping("/{productOrderId}") // Revisar para devolver 404 en lugar de lanzar excepción
+    public ResponseEntity<Void> deleteProductOrder(@PathVariable(name = "productOrderId") Long productOrderId) {
         if (productOrderId == null || productOrderId == 0) {
             return ResponseEntity.badRequest().body(null);
         }
 
+        ProductOrder produtToDelete = productOrderRepository.getProductOrderById(productOrderId);
+        if (produtToDelete == null) {
+            return ResponseEntity.notFound().build(); // Devuelve 404 Not Found
+        }
         productOrderRepository.deleteProductOrder(productOrderId);
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.noContent().build();
     }
 
 }

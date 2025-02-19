@@ -1,5 +1,6 @@
 package com.test.store.Infrastructure.Controllers;
 
+import com.test.store.Application.UseCases.UpdateProductUseCase;
 import com.test.store.Domain.Model.ProductRepository;
 import com.test.store.Infrastructure.DTO.ProductDTO;
 import com.test.store.Infrastructure.Mapper.ProductMapper;
@@ -16,6 +17,8 @@ public class ProductController {
 
     private final ProductRepository productRepository;
 
+    private final UpdateProductUseCase updateProductUseCase;
+
     @GetMapping("/{productId}")
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long productId) {
         return ResponseEntity.ok(ProductMapper.toDTO(productRepository.getProductById(productId)));
@@ -26,14 +29,17 @@ public class ProductController {
         return ResponseEntity.ok(ProductMapper.toDTOList(productRepository.listProducts()));
     }
 
-    @PutMapping
-    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO product){
-        if(product == null)
-        {
+    @PutMapping("/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long productId, @RequestBody ProductDTO product) {
+        if (productId == null || productId == 0) {
             return ResponseEntity.badRequest().body(null);
         }
 
-        return ResponseEntity.ok(ProductMapper.toDTO(productRepository.update(ProductMapper.toEntity(product))));
+        if (product == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        return ResponseEntity.ok(ProductMapper.toDTO(updateProductUseCase.execute(productId, ProductMapper.toEntity(product))));
     }
 
     @PostMapping
@@ -42,9 +48,8 @@ public class ProductController {
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable("productId") Long productId){  // ¿Qué devolvemos cuando DELETE?
-        if(productId == null || productId == 0)
-        {
+    public ResponseEntity<Void> deleteProduct(@PathVariable("productId") Long productId) {  // ¿Qué devolvemos cuando DELETE?
+        if (productId == null || productId == 0) {
             return ResponseEntity.badRequest().body(null);
         }
         return ResponseEntity.ok(productRepository.delete(productId));

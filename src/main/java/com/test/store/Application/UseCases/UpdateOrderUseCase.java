@@ -16,15 +16,21 @@ public class UpdateOrderUseCase {
 
     private final ProductRepository productRepository;
 
-    public ProductOrder execute(ProductOrder productOrder) {
-        Product product = productRepository.getProductById(productOrder.getProductId());
-        ProductOrder oldProductOrder = productOrderRepository.getProductOrderById(productOrder.getProductOrderId());
+    public ProductOrder execute(Long productOrderId, ProductOrder productOrder) {
+        System.out.println("Log - ProductOrder" + productOrder.toString());
 
-        Objects.requireNonNull(product, "El producto con ID " + productOrder.getProductId() + " no fue encontrado");
+
+        Product product = productRepository.getProductById(productOrder.getProductId());
+        ProductOrder oldProductOrder = productOrderRepository.getProductOrderById(productOrderId);
+
+
+        Objects.requireNonNull(product, "El producto con ID " + productOrderId + " no fue encontrado");
         if (productOrder.getQuantity() <= 0) {
             throw new IllegalArgumentException("La cantidad debe ser mayor que 0");
         }
 
+        oldProductOrder.setProductId(productOrder.getProductId());
+        oldProductOrder.setQuantity(productOrder.getQuantity());
         oldProductOrder.setTotalPrice(productOrder.getQuantity() * product.getPrice());
 
         return oldProductOrder;
